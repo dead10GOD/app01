@@ -1,37 +1,75 @@
 import {
-  Image,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import { colors } from "../utils/colors";
-import { fonts } from "../utils/fonts";
-
-import Ionicons from "react-native-vector-icons/Ionicons";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { useNavigation } from "@react-navigation/native";
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from 'react-native';
+import React, {useState} from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import {colors} from '../utils/colors';
+import {fonts} from '../utils/fonts';
+import {useNavigation} from '@react-navigation/native';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [secureEntery, setSecureEntery] = useState(true);
+  const [secureEntry, setSecureEntry] = useState(true);
+
+  // State for user inputs
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleGoBack = () => {
     navigation.goBack();
   };
+
   const handleSignup = () => {
-    navigation.navigate("SIGNUP");
+    navigation.navigate('SignUp');
+  };
+
+  const handleLogin = async () => {
+    const loginData = {
+      username,
+      password,
+    };
+
+    try {
+      const response = await axios.post(
+        'http://10.0.2.2:8080/api/login',
+        loginData,
+      ); // Use '10.0.2.2' for Android Emulator
+      if (response.status === 200) {
+        Alert.alert('Success', response.data); // Show success message
+        // Navigate or perform further actions after successful login
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          Alert.alert('Error', 'Invalid credentials'); // Handle unauthorized error
+        } else {
+          Alert.alert(
+            'Error',
+            'An unexpected error occurred. Please try again.',
+          );
+        }
+      } else {
+        Alert.alert(
+          'Error',
+          'Unable to connect to the server. Please check your connection.',
+        );
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
         <Ionicons
-          name={"arrow-back-outline"}
-          color={colors.primary}
+          name={'arrow-back-outline'}
           size={25}
+          color={colors.primary}
         />
       </TouchableOpacity>
       <View style={styles.textContainer}>
@@ -39,40 +77,46 @@ const LoginScreen = () => {
         <Text style={styles.headingText}>Welcome</Text>
         <Text style={styles.headingText}>Back</Text>
       </View>
-      {/* form  */}
+      {/* form */}
       <View style={styles.formContainer}>
+        {/* Username Input */}
         <View style={styles.inputContainer}>
-          <Ionicons name={"mail-outline"} size={30} color={colors.secondary} />
+          <Ionicons name="person-outline" size={30} color={colors.secondary} />
           <TextInput
-            style={styles.textInput}
-            placeholder="Enter your email"
+            style={styles.TextInput}
+            placeholder="Enter your Username"
             placeholderTextColor={colors.secondary}
-            keyboardType="email-address"
+            value={username}
+            onChangeText={setUsername}
           />
         </View>
+        {/* Password Input */}
         <View style={styles.inputContainer}>
-          <SimpleLineIcons name={"lock"} size={30} color={colors.secondary} />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter your password"
-            placeholderTextColor={colors.secondary}
-            secureTextEntry={secureEntery}
+          <Ionicons
+            name="lock-closed-outline"
+            size={30}
+            color={colors.secondary}
           />
-          <TouchableOpacity
-            onPress={() => {
-              setSecureEntery((prev) => !prev);
-            }}
-          >
-            <SimpleLineIcons name={"eye"} size={20} color={colors.secondary} />
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Enter your Password"
+            placeholderTextColor={colors.secondary}
+            secureTextEntry={secureEntry}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={() => setSecureEntry(prev => !prev)}>
+            <Ionicons name="eye-outline" size={30} color={colors.secondary} />
           </TouchableOpacity>
         </View>
         <TouchableOpacity>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginButtonWrapper}>
-          <Text style={styles.loginText}>Login</Text>
+        <TouchableOpacity
+          style={styles.loginButtonWrapper}
+          onPress={handleLogin}>
+          <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
-        
         <View style={styles.footerContainer}>
           <Text style={styles.accountText}>Don’t have an account?</Text>
           <TouchableOpacity onPress={handleSignup}>
@@ -97,8 +141,8 @@ const styles = StyleSheet.create({
     width: 40,
     backgroundColor: colors.gray,
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textContainer: {
     marginVertical: 20,
@@ -112,22 +156,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.secondary,
     borderRadius: 100,
     paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
     padding: 2,
     marginVertical: 10,
   },
-  textInput: {
+  TextInput: {
     flex: 1,
     paddingHorizontal: 10,
     fontFamily: fonts.Light,
   },
   forgotPasswordText: {
-    textAlign: "right",
+    textAlign: 'right',
     color: colors.primary,
     fontFamily: fonts.SemiBold,
     marginVertical: 10,
@@ -141,14 +185,14 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 20,
     fontFamily: fonts.SemiBold,
-    textAlign: "center",
+    textAlign: 'center',
     padding: 10,
   },
   footerContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 20,
     gap: 5,
   },
   accountText: {

@@ -1,96 +1,129 @@
 import {
-  Image,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import { colors } from "../utils/colors";
-import { fonts } from "../utils/fonts";
-
-import Ionicons from "react-native-vector-icons/Ionicons";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { useNavigation } from "@react-navigation/native";
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from 'react-native';
+import React, {useState} from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import {colors} from '../utils/colors';
+import {fonts} from '../utils/fonts';
+import {useNavigation} from '@react-navigation/native';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
-  const [secureEntery, setSecureEntery] = useState(true);
+  const [secureEntry, setSecureEntry] = useState(true);
+
+  // State for user inputs
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  const handleLogin = () => {
-    navigation.navigate("LOGIN");
+  const handleSignup = async () => {
+    const userData = {
+      username,
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post(
+        'http://10.0.2.2:8080/api/users',
+        userData,
+      );
+
+      if (response.status === 201) {
+        Alert.alert('Success', 'User created successfully!');
+        navigation.navigate('Login'); // Navigate to Login on successful sign-up
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 409) {
+          Alert.alert('Error', error.response.data); // Handle conflict errors (e.g., username or email exists)
+        } else {
+          Alert.alert(
+            'Error',
+            'An unexpected error occurred. Please try again.',
+          );
+        }
+      } else {
+        Alert.alert(
+          'Error',
+          'Unable to connect to the server. Please check your connection.',
+        );
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
         <Ionicons
-          name={"arrow-back-outline"}
-          color={colors.primary}
+          name={'arrow-back-outline'}
           size={25}
+          color={colors.primary}
         />
       </TouchableOpacity>
       <View style={styles.textContainer}>
         <Text style={styles.headingText}>Let's get</Text>
-        <Text style={styles.headingText}>started</Text>
+        <Text style={styles.headingText}>Started</Text>
       </View>
-      {/* form  */}
+      {/* form */}
       <View style={styles.formContainer}>
+        {/* Username Input */}
         <View style={styles.inputContainer}>
-          <Ionicons name={"mail-outline"} size={30} color={colors.secondary} />
+          <Ionicons name="person-outline" size={30} color={colors.secondary} />
           <TextInput
-            style={styles.textInput}
-            placeholder="Enter your email"
+            style={styles.TextInput}
+            placeholder="Enter your Username"
+            placeholderTextColor={colors.secondary}
+            value={username}
+            onChangeText={setUsername}
+          />
+        </View>
+        {/* Email Input */}
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={30} color={colors.secondary} />
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Enter your Email"
             placeholderTextColor={colors.secondary}
             keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
+        {/* Password Input */}
         <View style={styles.inputContainer}>
-          <SimpleLineIcons name={"lock"} size={30} color={colors.secondary} />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter your password"
-            placeholderTextColor={colors.secondary}
-            secureTextEntry={secureEntery}
-          />
-          <TouchableOpacity
-            onPress={() => {
-              setSecureEntery((prev) => !prev);
-            }}
-          >
-            <SimpleLineIcons name={"eye"} size={20} color={colors.secondary} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.inputContainer}>
-          <SimpleLineIcons
-            name={"screen-smartphone"}
+          <Ionicons
+            name="lock-closed-outline"
             size={30}
             color={colors.secondary}
           />
           <TextInput
-            style={styles.textInput}
-            placeholder="Enter your phone no"
+            style={styles.TextInput}
+            placeholder="Enter your Password"
             placeholderTextColor={colors.secondary}
-            secureTextEntry={secureEntery}
-            keyboardType="phone-pad"
+            secureTextEntry={secureEntry}
+            value={password}
+            onChangeText={setPassword}
           />
-        </View>
-
-        <TouchableOpacity style={styles.loginButtonWrapper}>
-          <Text style={styles.loginText}>Sign up</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.footerContainer}>
-          <Text style={styles.accountText}>Already have an account!</Text>
-          <TouchableOpacity onPress={handleLogin}>
-            <Text style={styles.signupText}>Login</Text>
+          <TouchableOpacity onPress={() => setSecureEntry(prev => !prev)}>
+            <Ionicons name="eye-outline" size={30} color={colors.secondary} />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          style={styles.loginButtonWrapper}
+          onPress={handleSignup}>
+          <Text style={styles.loginText}>SIGN-UP</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -109,8 +142,8 @@ const styles = StyleSheet.create({
     width: 40,
     backgroundColor: colors.gray,
     borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textContainer: {
     marginVertical: 20,
@@ -124,25 +157,19 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.secondary,
     borderRadius: 100,
     paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
     padding: 2,
     marginVertical: 10,
   },
-  textInput: {
+  TextInput: {
     flex: 1,
     paddingHorizontal: 10,
     fontFamily: fonts.Light,
-  },
-  forgotPasswordText: {
-    textAlign: "right",
-    color: colors.primary,
-    fontFamily: fonts.SemiBold,
-    marginVertical: 10,
   },
   loginButtonWrapper: {
     backgroundColor: colors.primary,
@@ -153,47 +180,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 20,
     fontFamily: fonts.SemiBold,
-    textAlign: "center",
+    textAlign: 'center',
     padding: 10,
-  },
-  continueText: {
-    textAlign: "center",
-    marginVertical: 20,
-    fontSize: 14,
-    fontFamily: fonts.Regular,
-    color: colors.primary,
-  },
-  googleButtonContainer: {
-    flexDirection: "row",
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    gap: 10,
-  },
-  googleImage: {
-    height: 20,
-    width: 20,
-  },
-  googleText: {
-    fontSize: 20,
-    fontFamily: fonts.SemiBold,
-  },
-  footerContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 20,
-    gap: 5,
-  },
-  accountText: {
-    color: colors.primary,
-    fontFamily: fonts.Regular,
-  },
-  signupText: {
-    color: colors.primary,
-    fontFamily: fonts.Bold,
   },
 });
