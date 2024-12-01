@@ -12,7 +12,7 @@ const HomeScreen = () => {
   };
 
   const handleSignup = () => {
-    navigation.navigate("SIGNUP");
+    navigation.navigate("SignUp");
   };
   return (
     <View style={styles.container}>
