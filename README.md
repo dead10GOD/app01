@@ -1,7 +1,11 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
-
+Please Install the necessary pakages before you try to run the app:
+1.npm install @react-navigation/native
+2.npm install react-native-screens react-native-safe-area-context
+3.npm install @react-navigation/native-stack
+4.npm install --save react-native-vector-icons
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
