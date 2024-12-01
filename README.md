@@ -6,6 +6,7 @@ Please Install the necessary pakages before you try to run the app:
 2.npm install react-native-screens react-native-safe-area-context
 3.npm install @react-navigation/native-stack
 4.npm install --save react-native-vector-icons
+## Always close the Metro server first by "ctrl+c" before shutting down the react-native app and the emulator. 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
