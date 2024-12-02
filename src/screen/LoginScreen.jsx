@@ -5,13 +5,18 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import {colors} from '../utils/colors';
-import {fonts} from '../utils/fonts';
-import {useNavigation} from '@react-navigation/native';
+import { colors } from '../utils/colors';
+import { fonts } from '../utils/fonts';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -30,19 +35,16 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
-    const loginData = {
-      username,
-      password,
-    };
+    const loginData = { username, password };
 
     try {
       const response = await axios.post(
         'http://10.0.2.2:8080/api/login',
-        loginData,
+        loginData
       ); // Use '10.0.2.2' for Android Emulator
       if (response.status === 200) {
-        Alert.alert('Success', response.data); // Show success message
-        // Navigate or perform further actions after successful login
+        Alert.alert('Success', 'Login successful!');
+        navigation.navigate('Welcome'); // Navigate to the Welcome screen
       }
     } catch (error) {
       if (error.response) {
@@ -51,80 +53,96 @@ const LoginScreen = () => {
         } else {
           Alert.alert(
             'Error',
-            'An unexpected error occurred. Please try again.',
+            'An unexpected error occurred. Please try again.'
           );
         }
       } else {
         Alert.alert(
           'Error',
-          'Unable to connect to the server. Please check your connection.',
+          'Unable to connect to the server. Please check your connection.'
         );
       }
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
-        <Ionicons
-          name={'arrow-back-outline'}
-          size={25}
-          color={colors.primary}
-        />
-      </TouchableOpacity>
-      <View style={styles.textContainer}>
-        <Text style={styles.headingText}>Hey,</Text>
-        <Text style={styles.headingText}>Welcome</Text>
-        <Text style={styles.headingText}>Back</Text>
-      </View>
-      {/* form */}
-      <View style={styles.formContainer}>
-        {/* Username Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={30} color={colors.secondary} />
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Enter your Username"
-            placeholderTextColor={colors.secondary}
-            value={username}
-            onChangeText={setUsername}
-          />
-        </View>
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons
-            name="lock-closed-outline"
-            size={30}
-            color={colors.secondary}
-          />
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Enter your Password"
-            placeholderTextColor={colors.secondary}
-            secureTextEntry={secureEntry}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity onPress={() => setSecureEntry(prev => !prev)}>
-            <Ionicons name="eye-outline" size={30} color={colors.secondary} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+        keyboardVerticalOffset={60} // Adjust based on header height
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <TouchableOpacity
+            style={styles.backButtonWrapper}
+            onPress={handleGoBack}
+          >
+            <Ionicons
+              name="arrow-back-outline"
+              size={25}
+              color={colors.primary}
+            />
           </TouchableOpacity>
-        </View>
-        <TouchableOpacity>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.loginButtonWrapper}
-          onPress={handleLogin}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <View style={styles.footerContainer}>
-          <Text style={styles.accountText}>Don’t have an account?</Text>
-          <TouchableOpacity onPress={handleSignup}>
-            <Text style={styles.signupText}>Sign up</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.headingText}>Hey,</Text>
+            <Text style={styles.headingText}>Welcome</Text>
+            <Text style={styles.headingText}>Back</Text>
+          </View>
+          {/* form */}
+          <View style={styles.formContainer}>
+            {/* Username Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="person-outline"
+                size={30}
+                color={colors.secondary}
+              />
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Enter your Username"
+                placeholderTextColor={colors.secondary}
+                value={username}
+                onChangeText={setUsername}
+              />
+            </View>
+            {/* Password Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={30}
+                color={colors.secondary}
+              />
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Enter your Password"
+                placeholderTextColor={colors.secondary}
+                secureTextEntry={secureEntry}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>
+                <Ionicons name="eye-outline" size={30} color={colors.secondary} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity>
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.loginButtonWrapper}
+              onPress={handleLogin}
+            >
+              <Text style={styles.loginText}>LOGIN</Text>
+            </TouchableOpacity>
+            <View style={styles.footerContainer}>
+              <Text style={styles.accountText}>Don’t have an account?</Text>
+              <TouchableOpacity onPress={handleSignup}>
+                <Text style={styles.signupText}>Sign up</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 

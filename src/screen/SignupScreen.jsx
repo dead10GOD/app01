@@ -5,13 +5,18 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import {colors} from '../utils/colors';
-import {fonts} from '../utils/fonts';
-import {useNavigation} from '@react-navigation/native';
+import { colors } from '../utils/colors';
+import { fonts } from '../utils/fonts';
+import { useNavigation } from '@react-navigation/native';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -36,7 +41,7 @@ const SignupScreen = () => {
     try {
       const response = await axios.post(
         'http://10.0.2.2:8080/api/users',
-        userData,
+        userData
       );
 
       if (response.status === 201) {
@@ -46,86 +51,87 @@ const SignupScreen = () => {
     } catch (error) {
       if (error.response) {
         if (error.response.status === 409) {
-          Alert.alert('Error', error.response.data); // Handle conflict errors (e.g., username or email exists)
+          Alert.alert('Error', error.response.data); // Handle conflict errors
         } else {
           Alert.alert(
             'Error',
-            'An unexpected error occurred. Please try again.',
+            'An unexpected error occurred. Please try again.'
           );
         }
       } else {
         Alert.alert(
           'Error',
-          'Unable to connect to the server. Please check your connection.',
+          'Unable to connect to the server. Please check your connection.'
         );
       }
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
-        <Ionicons
-          name={'arrow-back-outline'}
-          size={25}
-          color={colors.primary}
-        />
-      </TouchableOpacity>
-      <View style={styles.textContainer}>
-        <Text style={styles.headingText}>Let's get</Text>
-        <Text style={styles.headingText}>Started</Text>
-      </View>
-      {/* form */}
-      <View style={styles.formContainer}>
-        {/* Username Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={30} color={colors.secondary} />
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Enter your Username"
-            placeholderTextColor={colors.secondary}
-            value={username}
-            onChangeText={setUsername}
-          />
-        </View>
-        {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={30} color={colors.secondary} />
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Enter your Email"
-            placeholderTextColor={colors.secondary}
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons
-            name="lock-closed-outline"
-            size={30}
-            color={colors.secondary}
-          />
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Enter your Password"
-            placeholderTextColor={colors.secondary}
-            secureTextEntry={secureEntry}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity onPress={() => setSecureEntry(prev => !prev)}>
-            <Ionicons name="eye-outline" size={30} color={colors.secondary} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+        keyboardVerticalOffset={60} // Adjust based on header height
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
+            <Ionicons name={'arrow-back-outline'} size={25} color={colors.primary} />
           </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={styles.loginButtonWrapper}
-          onPress={handleSignup}>
-          <Text style={styles.loginText}>SIGN-UP</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.headingText}>Let's get</Text>
+            <Text style={styles.headingText}>Started</Text>
+          </View>
+          {/* form */}
+          <View style={styles.formContainer}>
+            {/* Username Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={30} color={colors.secondary} />
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Enter your Username"
+                placeholderTextColor={colors.secondary}
+                value={username}
+                onChangeText={setUsername}
+              />
+            </View>
+            {/* Email Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={30} color={colors.secondary} />
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Enter your Email"
+                placeholderTextColor={colors.secondary}
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+            {/* Password Input */}
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={30} color={colors.secondary} />
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Enter your Password"
+                placeholderTextColor={colors.secondary}
+                secureTextEntry={secureEntry}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>
+                <Ionicons name="eye-outline" size={30} color={colors.secondary} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.signupButtonWrapper}
+              onPress={handleSignup}
+            >
+              <Text style={styles.signupText}>SIGN-UP</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -171,12 +177,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontFamily: fonts.Light,
   },
-  loginButtonWrapper: {
+  signupButtonWrapper: {
     backgroundColor: colors.primary,
     borderRadius: 100,
     marginTop: 20,
   },
-  loginText: {
+  signupText: {
     color: colors.white,
     fontSize: 20,
     fontFamily: fonts.SemiBold,
