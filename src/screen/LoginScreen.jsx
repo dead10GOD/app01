@@ -43,8 +43,14 @@ const LoginScreen = () => {
         loginData
       ); // Use '10.0.2.2' for Android Emulator
       if (response.status === 200) {
+        
         Alert.alert('Success', 'Login successful!');
-        navigation.navigate('Welcome'); // Navigate to the Welcome screen
+        navigation.navigate('Welcome', { 
+          userData: {
+            username: response.data.username,
+            email: response.data.email
+          }
+        });
       }
     } catch (error) {
       if (error.response) {

@@ -46,7 +46,7 @@ const SignupScreen = () => {
 
       if (response.status === 201) {
         Alert.alert('Success', 'User created successfully!');
-        navigation.navigate('Login'); // Navigate to Login on successful sign-up
+        navigation.navigate('LOGIN'); // Navigate to Login on successful sign-up
       }
     } catch (error) {
       if (error.response) {
