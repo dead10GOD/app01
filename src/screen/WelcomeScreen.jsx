@@ -1,9 +1,18 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = ({ navigation, route }) => {
+  const { userData } = route.params || {};
+  
+  
+
   const handleNavigation = (screen) => {
-    navigation.navigate(screen);
+    if (screen === 'Account') {
+      
+      navigation.navigate(screen, { user: userData });
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   return (
@@ -39,7 +48,7 @@ const WelcomeScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => handleNavigation('Your Account')}
+          onPress={() => handleNavigation('Account')}
         >
           <Text style={styles.buttonText}>Your Account</Text>
         </TouchableOpacity>
