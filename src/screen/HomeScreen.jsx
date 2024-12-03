@@ -16,28 +16,31 @@ const HomeScreen = () => {
   };
   return (
     <View style={styles.container}>
-      
-      <Image source={require("../assets/newman.png")} style={styles.bannerImage} />
-      <Text style={styles.title}>Nagrik aur Samvidhan</Text>
-      <Text style={styles.subTitle}>
-      Gaming Your Way to Constitutional Wisdom! 
-      </Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.loginButtonWrapper,
-            { backgroundColor: colors.primary },
-          ]}
-          onPress={handleLogin}
-        >
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.loginButtonWrapper]}
-          onPress={handleSignup}
-        >
-          <Text style={styles.signupButtonText}>Sign-up</Text>
-        </TouchableOpacity>
+      <View style={styles.topContent}>
+        <Image source={require("../assets/newman.png")} style={styles.bannerImage} />
+        <Text style={styles.title}>Nagrik aur Samvidhan</Text>
+        <Text style={styles.subTitle}>
+          Gaming Your Way to Constitutional Wisdom! 
+        </Text>
+      </View>
+      <View style={styles.bottomContent}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.loginButtonWrapper,
+              { backgroundColor: colors.primary },
+            ]}
+            onPress={handleLogin}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.loginButtonWrapper]}
+            onPress={handleSignup}
+          >
+            <Text style={styles.signupButtonText}>Sign-up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -49,7 +52,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  topContent: {
+    flex: 1,
     alignItems: "center",
+  },
+  bottomContent: {
+    alignItems: "center",
+    marginBottom: 40,
   },
   bannerImage: {
     marginVertical: 60,
