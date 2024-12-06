@@ -1,19 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const WelcomeScreen = ({ navigation, route }) => {
   const { userData } = route.params || {};
   
-  
-
   const handleNavigation = (screen) => {
     if (screen === 'Account') {
-      
       navigation.navigate(screen, { user: userData });
     } else {
       navigation.navigate(screen);
     }
   };
+
+
 
   return (
     <View style={styles.container}>
@@ -21,13 +21,13 @@ const WelcomeScreen = ({ navigation, route }) => {
       <Image source={require('../assets/newman.png')} style={styles.image} />
 
       {/* Translucent Box */}
-      <View style={styles.translucentBox}>
+      <ScrollView contentContainerStyle={styles.translucentBox}>
         <Text style={styles.heading}>Welcome</Text>
 
         {/* Buttons */}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => handleNavigation('Games')}
+          onPress={() => handleNavigation('GameScreen')}
         >
           <Text style={styles.buttonText}>Games</Text>
         </TouchableOpacity>
@@ -52,7 +52,15 @@ const WelcomeScreen = ({ navigation, route }) => {
         >
           <Text style={styles.buttonText}>Your Account</Text>
         </TouchableOpacity>
-      </View>
+
+        {/* New Chatbot Button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleNavigation('Chatbot')}
+        >
+          <Text style={styles.buttonText}>Chatbot</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
@@ -65,6 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5', // Light background
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingVertical: 20, // Add vertical padding
   },
   image: {
     width: '100%',
@@ -74,7 +83,7 @@ const styles = StyleSheet.create({
   },
   translucentBox: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)', // Translucent black background
-    width: '90%',
+    width: '100%',
     borderRadius: 15,
     padding: 20,
     alignItems: 'center',
